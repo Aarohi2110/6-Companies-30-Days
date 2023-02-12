@@ -12,5 +12,7 @@ public:
         count += matrix[i][j] < 0;          
       }    
     return ans - (count & 1) * 2 * lo;
+    //if even number of negative nos--> return total sum of matrix
+    //if odd number of negative nos--> return total sum- min no in matrix, here 2*lo because we added the no above so subtract that and actual no.
   }
 };
