@@ -1,33 +1,31 @@
 class Solution {
- public:
-  bool canPartitionKSubsets(vector<int>& nums, int k) {
-    const int sum = accumulate(begin(nums), end(nums), 0);
-    if (sum % k != 0)
-      return false;
-
-    const int t = sum / k;  // Each subset's target sum
-    return dfs(nums, 0, k, t, t, vector<bool>(nums.size()));
-  }
-
- private:
-  bool dfs(const vector<int>& nums, int s, int k, int target,
-           const int subsetTargetSum, vector<bool>&& seen) {
-    if (k == 0)
-      return true;
-    if (target < 0)
-      return false;
-    if (target == 0)
-      return dfs(nums, 0, k - 1, subsetTargetSum, subsetTargetSum, move(seen));
-
-    for (int i = s; i < nums.size(); ++i) {
-      if (seen[i])
-        continue;
-      seen[i] = true;
-      if (dfs(nums, i + 1, k, target - nums[i], subsetTargetSum, move(seen)))
-        return true;
-      seen[i] = false;
-    }
-
-    return false;
-  }
+public:
+   bool canPartitionKSubsets(vector<int>& nums, int k) {
+      int n = nums.size();
+      vector <bool> dp(1 << n);
+      vector <int> total(1 << n);
+      sort(nums.begin(), nums.end());
+      int sum = 0;
+      for(int i = 0; i < nums.size(); i++)sum += nums[i];
+      if(sum % k || nums[nums.size() - 1] > sum / k) return false;
+      dp[0] = true;
+      sum /= k;
+      for(int i = 0; i < (1 << n); i++){
+         if(dp[i]){
+            for(int j = 0; j < n; j++){
+               int temp = i | (1 << j);
+               if(temp != i){
+                  if(nums[j] <= sum - (total[i] % sum)){
+                     dp[temp] = true;
+                     total[temp] = total[i] + nums[j];
+                  }
+                  else{
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return dp[(1 << n) - 1];
+   }
 };
