@@ -1,30 +1,33 @@
 class StockPrice {
- public:
-  void update(int timestamp, int price) {
-    if (timestampToPrice.count(timestamp)) {
-      const int prevPrice = timestampToPrice[timestamp];
-      if (--pricesCount[prevPrice] == 0)
-        pricesCount.erase(prevPrice);
+public:
+map<int,int> mp;
+multiset<int> ms;
+    StockPrice() {
+        
     }
-    timestampToPrice[timestamp] = price;
-    ++pricesCount[price];
-  }
-
-  int current() {
-    return rbegin(timestampToPrice)->second;
-  }
-
-  int maximum() {
-    return rbegin(pricesCount)->first;
-  }
-
-  int minimum() {
-    return begin(pricesCount)->first;
-  }
-
- private:
-  map<int, int> timestampToPrice;
-  map<int, int> pricesCount;
+    
+    void update(int timestamp, int price) {
+        if(const auto it = mp.find(timestamp); it != mp.end()){
+            ms.erase(ms.find(it->second));
+        }
+        mp[timestamp]=price;
+        ms.insert(price);
+    }
+    
+    int current() {
+        auto it = mp.rbegin();
+        return it->second;
+    }
+    
+    int maximum() {
+        return *rbegin(ms);
+        
+    }
+    
+    int minimum() {
+        return *begin(ms);
+        
+    }
 };
 
 /**
